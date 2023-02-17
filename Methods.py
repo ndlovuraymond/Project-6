@@ -1,7 +1,7 @@
 import random
 
 # giving the user instructions on how to enter the data
-print("Enter tasks in the following format: c1,c2,...\nwhere cs is cost")
+print("Enter tasks in the following format: c1,c2,...\nwhere cx is cost")
 print("Type END to finish entering tasks")
 # lists for my variables
 inputting_data = True
