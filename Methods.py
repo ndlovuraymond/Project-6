@@ -1,45 +1,70 @@
-class Tasks:
-    def __init__(self):
-        self.estimates = []
-        self.probabilities = []
+import random
 
-    def add_task(self, estimate, probability):
-        self.estimates.append(estimate)
-        self.probabilities.append(probability)
-
-    def completion_methods(self):
-        self.max = 0
-        self.min = 0
-        minimum = 0
-        maximum = 0
-        total_time = 0
-        count = 0
-        for i in range(len(self.estimates)):
-            if self.estimates[i] * self.probabilities[i] / 100 > maximum:
-                maximum = self.estimates[i] * self.probabilities[i] / 100
-            if self.estimates[i] * self.probabilities[i] / 100 < minimum:
-                minimum = self.estimates[i] * self.probabilities[i] / 100
-            total_time += self.estimates[i] * self.probabilities[i] / 100
-            if count == 0:
-                minimum = self.estimates[i] * self.probabilities[i] / 100
+# giving the user instructions on how to enter the data
+print("Enter tasks in the following format: c1,c2,...\nwhere cs is cost")
+print("Type END to finish entering tasks")
+# lists for my variables
+inputting_data = True
+cases = []
+count = 1
+# inputting the data for users tasks
+while inputting_data:
+    try:
+        cur_task = input(f"Task #{count}:")
+        if cur_task.upper() == "END":
+            break
+        list = cur_task.split(",")
+        task_values = []
+        if len(list) == 3:
+            best_case = int(list[0])
+            average_case = int(list[1])
+            worst_case = int(list[2])
+            cur_list = []
+            cur_list.append(best_case)
+            cur_list.append(average_case)
+            cur_list.append(worst_case)
+            cases.append(cur_list)
             count += 1
-        self.min = minimum
-        self.max = maximum
-        return total_time
+        else:
+            print(
+                "Enter the values in the format.\nTask #n: 10,20,40 where 10 is best case,20 is average,40 is worst."
+            )
+            continue
+    except:
+        print(
+            "Please enter the values in the correct format.\nTask #n: 10,20,40 where 10 is best case,20 is average,40 is worst."
+        )
+        continue
 
 
-plan = Tasks()
+# values for monte carlo method, this is the list that will be used to find the minimum,maximum and average time
+random_task_durations = []
+maximum = 0
+minimum = 0
+# implementation of monte carlo method to get 10000 random durations for the task
+for i in range(1, 10001):
+    cur_task_duration = 0
+    for value in cases:
+        random_choice = random.randint(0, len(cases) - 1)
+        cur_task_duration += value[random_choice]
+    random_task_durations.append(cur_task_duration)
+    if i == 1:
+        maximum = cur_task_duration
+        minimum = cur_task_duration
+    if cur_task_duration > maximum:
+        maximum = cur_task_duration
+    if cur_task_duration < minimum:
+        minimum = cur_task_duration
 
-making_plan = True
-while making_plan:
-    estimate = int(input("Enter the estimated completion of the task in days: "))
-    probability = int(input("Enter the task probability(%): "))
-    plan.add_task(estimate, probability)
-    more_tasks = input("Add another task? (y/n): ")
-    if more_tasks.lower() != "y":
-        making_plan = False
+# finding the average task duration
+total_duration_values = 0
+for value in random_task_durations:
+    total_duration_values += value
 
-average_time = plan.completion_methods()
-print("The maximum number of days is ", plan.max)
-print("The minimum number of days is", plan.min)
-print("The average time to finish the plan is", average_time, "days.")
+# the value displayed for the average
+average_duration = round(total_duration_values / len(random_task_durations))
+
+# displaying the values for minimum,maximum and average number of days
+print(f"Minimum = {minimum} days")
+print(f"Maximum = {maximum} days")
+print(f"Average = {average_duration} days")
