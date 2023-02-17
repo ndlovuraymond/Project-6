@@ -65,6 +65,58 @@ for value in random_task_durations:
 average_duration = round(total_duration_values / len(random_task_durations))
 
 # displaying the values for minimum,maximum and average number of days
-print(f"Minimum = {minimum} days")
+print(f"\nMinimum = {minimum} days")
 print(f"Maximum = {maximum} days")
-print(f"Average = {average_duration} days")
+print(f"Average = {average_duration} days\n")
+
+# probability of finishing the plan in given number of days
+print("Probability of finishing the plan in:")
+range = maximum - minimum
+bin_width = round(range / 10)
+i = minimum
+j = 0
+while j < 11:
+    values_in_range = []
+    values_in_lower_range = []
+    if i == minimum:
+        for value in random_task_durations:
+            if value <= i:
+                values_in_range.append(value)
+        probability = round((len(values_in_range) / len(random_task_durations)) * 100)
+        print(f"{i} days: {probability}%")
+        i += bin_width
+        j += 1
+        continue
+    if i != minimum:
+        for value in random_task_durations:
+            if value <= i:
+                values_in_range.append(value)
+        for value in random_task_durations:
+            if value <= (i - bin_width):
+                values_in_lower_range.append(value)
+    probability = (round((len(values_in_range) / len(random_task_durations)) * 100)) - (
+        round((len(values_in_lower_range) / len(random_task_durations)) * 100)
+    )
+    print(f"{i} days: {probability}%")
+    i += bin_width
+    j += 1
+
+# printing a blank line to separate
+print()
+
+# accumulated probability of finishing the task on or before calculation
+print("Accumulated probability of finishing the task in or before:")
+# calculating the bin width
+range = maximum - minimum
+bin_width = round(range / 10)
+i = minimum
+j = 0
+while j < 11:
+    values_in_range = []
+    for value in random_task_durations:
+        if value <= i:
+            values_in_range.append(value)
+    probability = round((len(values_in_range) / len(random_task_durations)) * 100)
+    print(f"{i} days: {probability}%")
+    i += bin_width
+    j += 1
